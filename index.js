@@ -18,7 +18,7 @@ client.on('ready', async () => {
 
   // Register webhook with SellAuth
   try {
-    const res = await fetch('https://api.sellauth.com/v1/shops/webhooks', {
+    const res = await fetch(`https://api.sellauth.com/v1/shops/${process.env.SHOP_ID}/webhooks`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.SELLAUTH_API_KEY}`,
@@ -52,7 +52,7 @@ app.post('/webhook', async (req, res) => {
   if (req.body.event === 'NOTIFICATION.SHOP_INVOICE_PROCESSED') {
     const invoiceId = req.body.data.invoice_id;
 
-const res = await fetch(`https://api.sellauth.com/v1/shops/${process.env.SHOP_ID}/webhooks`, {
+    const response = await fetch(`https://api.sellauth.com/v1/shops/${process.env.SHOP_ID}/invoices/${invoiceId}`, {
       headers: { 'Authorization': `Bearer ${process.env.SELLAUTH_API_KEY}` }
     });
     const invoice = await response.json();
