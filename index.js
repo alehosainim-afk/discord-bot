@@ -26,7 +26,7 @@ client.on('channelCreate', async (channel) => {
 });
 
 app.post('/webhook', async (req, res) => {
-  const secret = process.env.5767773|P19HX6ZTQxYfbBVRoohSxN2o94DoseBfoRkOGFxv22fc9d63;
+  const secret = process.env.WEBHOOK_SECRET;
   const signature = crypto.createHmac('sha256', secret).update(JSON.stringify(req.body)).digest('hex');
   if (signature !== req.headers['x-signature']) return res.status(401).send('Invalid signature');
 
