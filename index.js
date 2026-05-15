@@ -52,7 +52,7 @@ app.post('/webhook', async (req, res) => {
   if (req.body.event === 'NOTIFICATION.SHOP_INVOICE_PROCESSED') {
     const invoiceId = req.body.data.invoice_id;
 
-    const response = await fetch(`https://api.sellauth.com/v1/shops/${process.env.229114}/invoices/${invoiceId}`, {
+    const response = await fetch(`https://api.sellauth.com/v1/shops/229114/invoices/${invoiceId}`, {
       headers: { 'Authorization': `Bearer ${process.env.SELLAUTH_API_KEY}` }
     });
     const invoice = await response.json();
