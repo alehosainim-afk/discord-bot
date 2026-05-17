@@ -32,7 +32,10 @@ client.on('messageCreate', async (message) => {
   if (!message.embeds || message.embeds.length === 0) return;
 
   const embed = message.embeds[0];
-  const text = embed.description || '';
+const text = embed.description || embed.fields?.map(f => f.name + ' ' + f.value).join(' ') || '';
+console.log('Embed text:', text);
+console.log('Embed description:', embed.description);
+console.log('Embed fields:', JSON.stringify(embed.fields));
 
   const idMatch = text.match(/\((\d{17,19})\)/);
   const productMatch = text.match(/\*\*Product:\*\*\s*(.+)/i);
