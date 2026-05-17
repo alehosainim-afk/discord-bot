@@ -37,7 +37,7 @@ console.log('Embed text:', text);
 console.log('Embed description:', embed.description);
 console.log('Embed fields:', JSON.stringify(embed.fields));
 
-  const idMatch = text.match(/\((\d{17,19})\)/);
+  const idMatch = text.match(/`(\d{17,19})`/);
   const productMatch = text.match(/\*\*Product:\*\*\s*(.+)/i);
   const quantityMatch = text.match(/\*\*Quantity:\*\*\s*(.+)/i);
   const priceMatch = text.match(/\*\*Amount Paid:\*\*\s*(.+)/i);
