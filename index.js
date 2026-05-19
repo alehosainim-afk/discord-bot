@@ -107,7 +107,6 @@ client.on('interactionCreate', async (interaction) => {
     vouchCount = interaction.options.getInteger('number');
     await interaction.reply({ content: `Vouch counter reset to ${vouchCount}`, ephemeral: true });
   }
-});
   if (interaction.commandName === 'vouchmsggen') {
     const user = interaction.options.getUser('user');
     const product = interaction.options.getString('product');
@@ -124,5 +123,5 @@ client.on('interactionCreate', async (interaction) => {
       await interaction.reply({ content: `Could not send DM: ${e.message}`, ephemeral: true });
     }
   }
-app.listen(process.env.PORT || 3000);
+});
 client.login(process.env.TOKEN);
