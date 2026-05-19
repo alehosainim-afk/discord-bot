@@ -45,7 +45,7 @@ client.on('messageCreate', async (message) => {
   if (message.channelId === VOUCH_CHANNEL_ID && !message.author.bot) {
     try {
       await message.react('✅');
-      await message.reply(`# Vouch Number: ${vouchCount}:white_check_mark:`);
+      await message.reply(`# Vouch Number: ${vouchCount} :white_check_mark:`);
       vouchCount++;
     } catch (e) {
       console.log('Could not react/reply:', e.message);
