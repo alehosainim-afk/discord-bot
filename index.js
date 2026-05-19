@@ -29,6 +29,22 @@ client.on('ready', async () => {
       .addIntegerOption(option =>
         option.setName('number').setDescription('Start number').setRequired(true)
       )
+,
+    new SlashCommandBuilder()
+      .setName('vouchmsggen')
+      .setDescription('Generate vouch message for a customer')
+      .addUserOption(option =>
+        option.setName('user').setDescription('The customer').setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('product').setDescription('Product name').setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('price').setDescription('Price').setRequired(true)
+      )
+      .addStringOption(option =>
+        option.setName('payment').setDescription('Payment method').setRequired(true)
+      )
   ].map(cmd => cmd.toJSON());
 
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
@@ -92,6 +108,21 @@ client.on('interactionCreate', async (interaction) => {
     await interaction.reply({ content: `Vouch counter reset to ${vouchCount}`, ephemeral: true });
   }
 });
+  if (interaction.commandName === 'vouchmsggen') {
+    const user = interaction.options.getUser('user');
+    const product = interaction.options.getString('product');
+    const price = interaction.options.getString('price');
+    const payment = interaction.options.getString('payment');
 
+    try {
+      await user.send(
+        `Thank you for your purchase! I would really appreciate it if you could paste this next message in <#${VOUCH_CHANNEL_ID}>!\n` +
+        `+rep <@1472661189824872622> bought ${product} [${price}] ${payment} thank you legit`
+      );
+      await interaction.reply({ content: `DM sent to ${user.tag}`, ephemeral: true });
+    } catch (e) {
+      await interaction.reply({ content: `Could not send DM: ${e.message}`, ephemeral: true });
+    }
+  }
 app.listen(process.env.PORT || 3000);
 client.login(process.env.TOKEN);
