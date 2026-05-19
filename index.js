@@ -15,7 +15,7 @@ const app = express();
 const CATEGORY_NAME = 'Tickts';
 const MESSAGE = 'If you want to add credits, make sure to purchase them from https://chroto.mysellauth.com/';
 const PURCHASE_CHANNEL_ID = '1504492433621254186';
-const VOUCH_CHANNEL_ID = '1502561116872507523';
+const VOUCH_CHANNEL_ID = '1502780794999930961';
 
 let vouchCount = 97;
 
