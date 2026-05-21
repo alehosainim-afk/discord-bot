@@ -11,6 +11,13 @@ LTCCHRO_ID = 1472661189824872622
 
 vouch_count = 97
 owners = set()
+import random
+import string
+
+keys = {}  # key: {'used': False, 'reseller': False}
+SERVER_LINK = 'https://discord.gg/n4MhUZr2bZ'
+RESELLER_ROLE_ID = 1503674122134356108
+RESELLER_SERVER_ID = 1493611654452084866
 
 intents = discord.Intents.default()
 intents.guilds = True
@@ -119,6 +126,7 @@ async def setowner(interaction: discord.Interaction, user: discord.User):
    owners.add(user.id)
    await interaction.response.send_message(f'{user} added as owner', ephemeral=True)
 
+
 @tree.command(name='removeowner', description='Remove an owner')
 @app_commands.describe(user='The user to remove')
 async def removeowner(interaction: discord.Interaction, user: discord.User):
@@ -127,5 +135,74 @@ async def removeowner(interaction: discord.Interaction, user: discord.User):
        return
    owners.discard(user.id)
    await interaction.response.send_message(f'{user} removed as owner', ephemeral=True)
+
+
+@tree.command(name='generate_key', description='Generate a key')
+@app_commands.describe(reseller='Generate a reseller key?')
+async def generate_key(interaction: discord.Interaction, reseller: bool = False):
+    if interaction.user.id != SUPER_OWNER:
+        await interaction.response.send_message('You are not authorized.', ephemeral=True)
+        return
+    
+    if reseller:
+        key = 'R' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    else:
+        chars = string.ascii_uppercase.replace('R', '') + string.digits
+        key = ''.join(random.choices(chars, k=6))
+        while key.startswith('R'):
+            key = ''.join(random.choices(chars, k=6))
+    
+    keys[key] = {'used': False, 'reseller': reseller}
+    await interaction.response.send_message(f'Key generated: `{key}`', ephemeral=True)
+
+
+@tree.command(name='redeem_key', description='Redeem a key')
+@app_commands.describe(key='Your 6-digit key')
+async def redeem_key(interaction: discord.Interaction, key: str):
+    key = key.upper()
+    if key not in keys:
+        await interaction.response.send_message('Invalid key.', ephemeral=True)
+        return
+    if keys[key]['used']:
+        await interaction.response.send_message('This key has already been used.', ephemeral=True)
+        return
+    if key.startswith('R'):
+        await interaction.response.send_message('Use /redeem_resellable for reseller keys.', ephemeral=True)
+        return
+    
+    keys[key]['used'] = True
+    try:
+        await interaction.user.send(f'Thank you! Here is your server link: {SERVER_LINK}')
+        await interaction.response.send_message('Check your DMs!', ephemeral=True)
+    except:
+        await interaction.response.send_message('Could not send DM. Please enable DMs.', ephemeral=True)
+
+
+@tree.command(name='redeem_resellable', description='Redeem a reseller key')
+@app_commands.describe(key='Your reseller key')
+async def redeem_resellable(interaction: discord.Interaction, key: str):
+    key = key.upper()
+    if key not in keys:
+        await interaction.response.send_message('Invalid key.', ephemeral=True)
+        return
+    if keys[key]['used']:
+        await interaction.response.send_message('This key has already been used.', ephemeral=True)
+        return
+    if not key.startswith('R'):
+        await interaction.response.send_message('Use /redeem_key for normal keys.', ephemeral=True)
+        return
+    
+    keys[key]['used'] = True
+    try:
+        guild = client.get_guild(1493611654452084866)
+        member = guild.get_member(interaction.user.id)
+        if member:
+            role = guild.get_role(RESELLER_ROLE_ID)
+            await member.add_roles(role)
+        await interaction.user.send(f'Thank you! Here is your server link: {SERVER_LINK}')
+        await interaction.response.send_message('Check your DMs!', ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message(f'Error: {e}', ephemeral=True)
+
 
 client.run(os.environ['TOKEN'])
