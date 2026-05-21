@@ -138,22 +138,24 @@ async def removeowner(interaction: discord.Interaction, user: discord.User):
 
 
 @tree.command(name='generate_key', description='Generate a key')
-@app_commands.describe(reseller='Generate a reseller key?')
-async def generate_key(interaction: discord.Interaction, reseller: bool = False):
+@app_commands.describe(reseller='Generate a reseller key?', amount='How many keys to generate')
+async def generate_key(interaction: discord.Interaction, reseller: bool = False, amount: int = 1):
     if interaction.user.id != SUPER_OWNER:
         await interaction.response.send_message('You are not authorized.', ephemeral=True)
         return
     
-    if reseller:
-        key = 'R' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-    else:
-        chars = string.ascii_uppercase.replace('R', '') + string.digits
-        key = ''.join(random.choices(chars, k=6))
-        while key.startswith('R'):
+    generated = []
+    for _ in range(amount):
+        if reseller:
+            key = 'R' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        else:
+            chars = string.ascii_uppercase.replace('R', '') + string.digits
             key = ''.join(random.choices(chars, k=6))
+        
+        keys[key] = {'used': False, 'reseller': reseller}
+        generated.append(f'`{key}`')
     
-    keys[key] = {'used': False, 'reseller': reseller}
-    await interaction.response.send_message(f'Key generated: `{key}`', ephemeral=True)
+    await interaction.response.send_message(f'Keys generated:\n' + '\n'.join(generated), ephemeral=True)
 
 
 @tree.command(name='redeem_key', description='Redeem a key')
