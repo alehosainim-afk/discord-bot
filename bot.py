@@ -194,8 +194,8 @@ async def redeem_resellable(interaction: discord.Interaction, key: str):
     
     keys[key]['used'] = True
     try:
-        guild = client.get_guild(1493611654452084866)
-        member = guild.get_member(interaction.user.id)
+        guild = client.get_guild(RESELLER_SERVER_ID)
+        member = await guild.fetch_member(interaction.user.id)
         if member:
             role = guild.get_role(RESELLER_ROLE_ID)
             await member.add_roles(role)
