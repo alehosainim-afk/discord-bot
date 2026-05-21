@@ -10,6 +10,7 @@ VOUCH_CHANNEL_ID = 1502780794999930961
 LTCCHRO_ID = 1472661189824872622
 
 vouch_count = 97
+owners = set()
 
 intents = discord.Intents.default()
 intents.guilds = True
@@ -83,6 +84,9 @@ async def on_message(message):
 @tree.command(name='resetvouch', description='Reset vouch counter')
 @app_commands.describe(number='Start number')
 async def resetvouch(interaction: discord.Interaction, number: int):
+    if interaction.user.id not in owners:
+        await interaction.response.send_message('You have no permission to use this command.', ephemeral=True)
+        return
     global vouch_count
     vouch_count = number
     await interaction.response.send_message(f'Vouch counter reset to {vouch_count}', ephemeral=True)
@@ -91,6 +95,9 @@ async def resetvouch(interaction: discord.Interaction, number: int):
 @tree.command(name='vouchmsggen', description='Generate vouch message for a customer')
 @app_commands.describe(user='The customer', product='Product name', price='Price', payment='Payment method')
 async def vouchmsggen(interaction: discord.Interaction, user: discord.User, product: str, price: str, payment: str):
+    if interaction.user.id not in owners:
+        await interaction.response.send_message('You have no permission to use this command.', ephemeral=True)
+        return
     try:
         await user.send(
             f'Thank you for your purchase! I would really appreciate it if you could paste this next message in <#{VOUCH_CHANNEL_ID}>!\n'
@@ -99,6 +106,19 @@ async def vouchmsggen(interaction: discord.Interaction, user: discord.User, prod
         await interaction.response.send_message(f'DM sent to {user}', ephemeral=True)
     except Exception as e:
         await interaction.response.send_message(f'Could not send DM: {e}', ephemeral=True)
+
+
+@tree.command(name='setowner', description='Add an owner')
+@app_commands.describe(user='The user to add as owner')
+async def setowner(interaction: discord.Interaction, user: discord.User):
+    owners.add(user.id)
+    await interaction.response.send_message(f'{user} added as owner', ephemeral=True)
+
+@tree.command(name='removeowner', description='Remove an owner')
+@app_commands.describe(user='The user to remove')
+async def removeowner(interaction: discord.Interaction, user: discord.User):
+    owners.discard(user.id)
+    await interaction.response.send_message(f'{user} removed as owner', ephemeral=True)
 
 
 client.run(os.environ['TOKEN'])
