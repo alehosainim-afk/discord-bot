@@ -172,7 +172,10 @@ async def redeem_key(interaction: discord.Interaction, key: str):
     
     keys[key]['used'] = True
     try:
-        await interaction.user.send(f'Thank you! Here is your server link: {SERVER_LINK}')
+        guild = client.get_guild(RESELLER_SERVER_ID)
+        channel = guild.system_channel
+        invite = await channel.create_invite(max_uses=1, unique=True)
+        await interaction.user.send(f'Thank you! Here is your server link: {invite.url}')
         await interaction.response.send_message('Check your DMs!', ephemeral=True)
     except:
         await interaction.response.send_message('Could not send DM. Please enable DMs.', ephemeral=True)
@@ -199,7 +202,7 @@ async def redeem_resellable(interaction: discord.Interaction, key: str):
         if member:
             role = guild.get_role(RESELLER_ROLE_ID)
             await member.add_roles(role)
-        await interaction.user.send(f'Thank you! Here is your server link: {SERVER_LINK}')
+        await interaction.user.send(f'Your reseller key has been activated. Now you are able to invite other people to the server.\n{SERVER_LINK}')
         await interaction.response.send_message('Check your DMs!', ephemeral=True)
     except Exception as e:
         await interaction.response.send_message(f'Error: {e}', ephemeral=True)
