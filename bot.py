@@ -108,17 +108,24 @@ async def vouchmsggen(interaction: discord.Interaction, user: discord.User, prod
         await interaction.response.send_message(f'Could not send DM: {e}', ephemeral=True)
 
 
+SUPER_OWNER = 1472661189824872622
+
 @tree.command(name='setowner', description='Add an owner')
 @app_commands.describe(user='The user to add as owner')
 async def setowner(interaction: discord.Interaction, user: discord.User):
-    owners.add(user.id)
-    await interaction.response.send_message(f'{user} added as owner', ephemeral=True)
+   if interaction.user.id != SUPER_OWNER:
+       await interaction.response.send_message('You are not authorized.', ephemeral=True)
+       return
+   owners.add(user.id)
+   await interaction.response.send_message(f'{user} added as owner', ephemeral=True)
 
 @tree.command(name='removeowner', description='Remove an owner')
 @app_commands.describe(user='The user to remove')
 async def removeowner(interaction: discord.Interaction, user: discord.User):
-    owners.discard(user.id)
-    await interaction.response.send_message(f'{user} removed as owner', ephemeral=True)
-
+   if interaction.user.id != SUPER_OWNER:
+       await interaction.response.send_message('You are not authorized.', ephemeral=True)
+       return
+   owners.discard(user.id)
+   await interaction.response.send_message(f'{user} removed as owner', ephemeral=True)
 
 client.run(os.environ['TOKEN'])
