@@ -58,10 +58,12 @@ async def on_message(message):
     if not message.embeds:
         return
 
-    embed = message.embeds[0]
-    text = embed.description or ' '.join(
-        f.name + ' ' + f.value for f in embed.fields
-    ) if embed.fields else ''
+    if embed.description:
+    text = embed.description
+    elif embed.fields:
+    text = ' '.join(f.name + ' ' + f.value for f in embed.fields)
+    else:
+    text = ''
 
     id_match = re.search(r'\((\d{17,19})\)', text)
     product_match = re.search(r'\*\*Product:\*\*\s*(.+)', text, re.IGNORECASE)
