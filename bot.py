@@ -57,7 +57,7 @@ async def on_message(message):
         return
     if not message.embeds:
         return
-
+    embed = message.embeds[0]
     if embed.description:
         text = embed.description
     elif embed.fields:
