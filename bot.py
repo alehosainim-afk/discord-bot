@@ -66,7 +66,7 @@ async def on_message(message):
         text = ''
     print(f'Text: {repr(text)}')
 
-    id_match = re.search(r'\((\d{17,19})\)', text)
+    id_match = re.search(r'\(`(\d{17,19})`\)', text)
     product_match = re.search(r'\*\*Product:\*\*\s*(.+)', text, re.IGNORECASE)
     quantity_match = re.search(r'\*\*Quantity:\*\*\s*(.+)', text, re.IGNORECASE)
     price_match = re.search(r'\*\*Amount Paid:\*\*\s*(.+)', text, re.IGNORECASE)
