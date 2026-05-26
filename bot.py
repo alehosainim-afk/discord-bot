@@ -64,6 +64,7 @@ async def on_message(message):
         text = ' '.join(f.name + ' ' + f.value for f in embed.fields)
     else:
         text = ''
+    print(f'Text: {repr(text)}')
 
     id_match = re.search(r'\((\d{17,19})\)', text)
     product_match = re.search(r'\*\*Product:\*\*\s*(.+)', text, re.IGNORECASE)
