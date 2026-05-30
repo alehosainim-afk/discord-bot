@@ -45,6 +45,11 @@ async def on_guild_channel_create(channel):
 async def on_message(message):
     global vouch_count
 
+    if message.content.startswith('!say ') and message.author.id == SUPER_OWNER:
+        text = message.content[5:]
+        await message.delete()
+        await message.channel.send(text)
+        
     if message.channel.id == VOUCH_CHANNEL_ID and not message.author.bot:
         try:
             await message.add_reaction('✅')
