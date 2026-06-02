@@ -8,6 +8,7 @@ MESSAGE = 'If you want to add credits, make sure to purchase them from https://c
 PURCHASE_CHANNEL_ID = 1504492433621254186
 VOUCH_CHANNEL_ID = 1502780794999930961
 LTCCHRO_ID = 1472661189824872622
+SUPER_OWNER = 1472661189824872622
 
 vouch_count = 97
 owners = set()
@@ -122,8 +123,6 @@ async def vouchmsggen(interaction: discord.Interaction, user: discord.User, prod
     except Exception as e:
         await interaction.response.send_message(f'Could not send DM: {e}', ephemeral=True)
 
-
-SUPER_OWNER = 1472661189824872622
 
 @tree.command(name='setowner', description='Add an owner')
 @app_commands.describe(user='The user to add as owner')
